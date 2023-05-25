@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NIRS</string>
+    <string name="back4app_server_url" translatable="false">https://parseapi.back4app.com/</string>
+
+    <!-- Paste BOTH keys here  -->
+    <string name="back4app_app_id" translatable="false">dQcUUoAzRFT8fwKWWJKjc8Zxx85r9Bt0hz0ODZKD</string>
+    <string name="back4app_client_key" translatable="false">coY5h6jJXH0imtQ2Ef9FP84Jy6EjQOTBxHFtbfIh</string>
+    <string name="search_users">Search Users</string>
+</resources>
