@@ -69,8 +69,10 @@ class ChatActivity : AppCompatActivity() {
             val sander = args[2] as String
             messages = args[1] as String
             val length = args[3] as Int
+            val type = args[0] as String
+
             lifecycleScope.launch(Dispatchers.Main) {
-                myNickname?.let { setItemsAdapter(sander, it,messages,args[0] as String,length) }
+                myNickname?.let { setItemsAdapter(sander, it,messages,type,length) }
             }
         }
 
@@ -85,8 +87,15 @@ class ChatActivity : AppCompatActivity() {
                 val message = editText.text.toString()
                 editText.text.clear()
                 val bitmapString = bitmap?.let { encoder(it,message) }
+                val oldBitmapString = bitmap?.let { encoderOld(it) }
                 myNickname?.let {
                     if (bitmapString != null) {
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            oldBitmapString?.let { it1 ->
+                                setItemsAdapter(it, it,
+                                    it1,"images",message.length)
+                            }
+                        }
                         server.sendMessage(it,nickname,bitmapString,"Image",message.length)
                     }
                 }
@@ -100,9 +109,18 @@ class ChatActivity : AppCompatActivity() {
 
         backButton.setOnClickListener {
             server.closeServer()
+
             finish()
         }
     }
+
+    private fun encoderOld(bitmap: Bitmap):String {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+
     private fun textsHistory(myNickname:String,nickname: String){
         val apiService = ApiClient.getClient().create(ApiService::class.java)
         val callRooms = apiService.getRoom(myNickname,nickname)
@@ -123,7 +141,6 @@ class ChatActivity : AppCompatActivity() {
                                 val messages = response.body()
                                 messages?.forEach {
                                     val message = JSONObject(it.message)
-                                    Log.i("WINWIN",it.type)
                                     setItemsAdapter(
                                         it.sander,
                                         myNickname,

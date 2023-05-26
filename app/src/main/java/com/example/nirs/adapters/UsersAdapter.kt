@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nirs.R
 import com.example.nirs.activity.ChatActivity
 import com.example.nirs.model.userAPI.UserAPI
-import com.example.nirs.model.userDB.User
 
 class UsersAdapter(
     private var users: ArrayList<UserAPI> = arrayListOf()

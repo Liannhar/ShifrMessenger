@@ -2,6 +2,7 @@ package com.example.nirs.adapters
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +46,17 @@ class ChatAdapter(private var messages: ArrayList<Message> = arrayListOf()
                     message.visibility = View.VISIBLE
                     val bitmap = convertToBitmap(decoder(item.message))
                     message.text = Encryption().decodeImage(bitmap,item.length)
+                    Log.i("WINWIN", item.length.toString())
                     Glide.with(itemView.context).load(bitmap).fitCenter().into(image)
                 }
+                "images"->{
+                    image.visibility = View.VISIBLE
+                    message.visibility = View.VISIBLE
+                    val bitmap = convertToBitmap(decoder(item.message))
+                    message.text = "Original"
+                    Glide.with(itemView.context).load(bitmap).fitCenter().into(image)
+                }
+
             }
 
             if (item.isMe){

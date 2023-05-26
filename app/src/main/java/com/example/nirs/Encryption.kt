@@ -10,7 +10,6 @@ class Encryption {
         var index = 0
         val mutableBitmap: Bitmap = image.copy(Bitmap.Config.ARGB_8888, true)
         val binaryMessage = message.toByteArray().joinToString(separator = "") { String.format("%8s", Integer.toBinaryString(it.toInt() and 0xFF)).replace(' ', '0') }
-        Log.i("WINWIN",binaryMessage)
         for (x in 0 until width) {
             for (y in 0 until height) {
                 if (index < binaryMessage.length) {

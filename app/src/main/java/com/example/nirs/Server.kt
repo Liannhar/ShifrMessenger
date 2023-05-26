@@ -1,8 +1,11 @@
 package com.example.nirs
 
 
+import androidx.lifecycle.lifecycleScope
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 

@@ -1,7 +1,9 @@
 package com.example.nirs.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -11,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.nirs.R
+import com.example.nirs.Server
 import com.example.nirs.accessors.ApiClient
 import com.example.nirs.accessors.ApiService
 import com.example.nirs.adapters.UsersAdapter
@@ -40,6 +43,21 @@ class SearchableActivity : AppCompatActivity() {
         adapter = UsersAdapter(userList)
         recyclerView.adapter = adapter
         val searchView = findViewById<SearchView>(R.id.search)
+        val server = Server()
+        server.connectToServer()
+        server.returnSocketForListening().on("new_user_connected"){
+            lifecycleScope.launch {
+                fetchNewUser()
+            }
+        }
+
+        findViewById<ImageView>(R.id.exit_button).setOnClickListener{
+            val prefs = getSharedPreferences("MyPrefsFile", MODE_PRIVATE)
+            prefs.edit().putInt("login", -1).apply()
+            val intent = Intent(this@SearchableActivity, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         searchView.setOnQueryTextListener(object:SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -63,6 +81,7 @@ class SearchableActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val users = response.body()
                     if (users != null) {
+                        userList.clear()
                         userList.addAll(users)
                         adapter.changeAllUsers(userList)
                         progressBar.isVisible = false
@@ -75,10 +94,32 @@ class SearchableActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<UserAPI>>, t: Throwable) {
                 // Handle the failure
+                Log.i("WINWIN",t.toString())
             }
         })
+    }
 
+    private fun  fetchNewUser() {
+        val apiService = ApiClient.getClient().create(ApiService::class.java)
+        val callUsers = apiService.getAllUsers()
+        callUsers.enqueue(object : Callback<List<UserAPI>> {
+            override fun onResponse(call: Call<List<UserAPI>>, response: Response<List<UserAPI>>) {
+                if (response.isSuccessful) {
+                    val users = response.body()
+                    if (users != null) {
+                        userList.clear()
+                        userList.addAll(users)
+                        adapter.changeAllUsers(userList)
+                    }
+                } else {
+                    Log.i("WINWIN","Error")
+                }
+            }
 
+            override fun onFailure(call: Call<List<UserAPI>>, t: Throwable) {
+                // Handle the failure
+            }
+        })
     }
 
 
