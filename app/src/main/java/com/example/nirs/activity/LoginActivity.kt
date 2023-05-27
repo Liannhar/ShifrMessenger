@@ -3,6 +3,7 @@ package com.example.nirs.activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -55,10 +56,12 @@ class LoginActivity(): AppCompatActivity()  {
                     prefs.edit().putInt("login",1).apply()
                     prefs.edit().putString("nickname",username).apply()
                     progressBar.isVisible=false
+                    Log.i("WINWIN","LOG")
                     startMActivity()
                 } else {
                     progressBar.isVisible=false
                     incorrect.isVisible= true
+                    Log.i("WINWIN","UNLOG")
                 }
 
             }
